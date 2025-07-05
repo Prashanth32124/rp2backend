@@ -40,18 +40,19 @@ MongoClient.connect(mongoURL)
     res.send(`logged successfully ${req.user.username}`)
     });
    
-
-    app.get("/klimages", async (req, res) => {
-      console.log("➡️ Received request to /klimages"); 
-      try {
-        const imagesCollection = db.collection("klimages");
-        const images = await imagesCollection.find().toArray();
-        console.log("✅ Successfully fetched images:", images); 
-        res.json(images);
-      } catch (err) {
-        console.error("❌ Error fetching images:", err);
-        res.status(500).json({ message: "❌ Error fetching images", error: err.message });
+    const Middlewareimages=async(req,res,next)=>{
+      const usersCollections=db.collection("klimages");
+      const images = await usersCollections.find().toArray();
+      if(images.length>0){
+        req.images=images;
+        next();
       }
+      else{
+        return res.status(400).send("some error occured");
+      }
+    }
+    app.get("/klimages",Middlewareimages, (req, res) => {
+     res.json(req.images);
     });
 
     const Middlewaresignup=async(req,res,next)=>{
