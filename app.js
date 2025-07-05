@@ -23,22 +23,21 @@ MongoClient.connect(mongoURL)
     app.get("/", (req, res) => {
       res.send("Hello Prashu! Server is running and DB connected! 😊");
     });
-
-    app.post("/login", async (req, res) => {
+    
+    const Middlewarelogin =async(req,res,next)=>{
       const {email, username, password } = req.body;
-    
-      try {
-        const usersCollection = db.collection("Users");
-        const user = await usersCollection.findOne({username, password });
-    
-        if (user) {
-          res.json({ message: "✅ Login successful!" });
-        } else {
-          res.status(401).json({ message: "❌ Invalid credentials" });
-        }
-      } catch (err) {
-        res.status(500).json({ message: "❌ Server error", error: err.message });
-      }
+      const usersCollection = db.collection("Users");
+      const user = await usersCollection.findOne({username, password });
+     if(user){
+      req.user=user;
+      next();
+     }
+     else{
+      return res.send("Invalid")
+     }
+    }
+    app.post("/login", Middlewarelogin, (req, res) => {
+    res.send("logged successfully")
     });
    
 
