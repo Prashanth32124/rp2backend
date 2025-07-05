@@ -37,7 +37,7 @@ MongoClient.connect(mongoURL)
      }
     }
     app.post("/login", Middlewarelogin, (req, res) => {
-    res.send("logged successfully")
+    res.send(`logged successfully ${req.user.username}`)
     });
    
 
@@ -54,29 +54,21 @@ MongoClient.connect(mongoURL)
       }
     });
 
-    
-    app.post("/signup", async (req, res) => {
-      const { email ,username, password } = req.body;
-      console.log("📥 Received signup:", { username, password });
-    
-      try {
-        const usersCollection = db.collection("Users");
-    
-        const existingUser = await usersCollection.findOne({ username });
-        console.log("🔍 Existing user:", existingUser); 
-    
-        if (existingUser) {
-          return res.status(400).json({ message: "❌ Username already taken" });
-        }
-    
-        const insertResult = await usersCollection.insertOne({email, username, password });
-        console.log("✅ Inserted:", insertResult); 
-    
-        res.json({ message: "✅ Signup successful!" });
-      } catch (err) {
-        console.error("❌ Error during signup:", err);
-        res.status(500).json({ message: "❌ Server error", error: err.message });
+    const Middlewaresignup=async(req,res,next)=>{
+      const {email,username,password}=req.body;
+      const Usercollections=db.collection("Users");
+      const existinguser=await Usercollections.findOne({username});
+      if(existinguser){
+         return res.status(400).send("❌ Username already taken");
       }
+      else{
+      const insertResult= await Usercollections.insertOne({email,username,password});
+      req.user={username};
+      next();
+      }
+    }
+    app.post("/signup", Middlewaresignup, (req, res) => {
+      res.send(`signup successfully ${req.user.username}`)
     });
     
 
