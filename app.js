@@ -98,7 +98,17 @@ MongoClient.connect(mongoURL)
         }
       });
 
-
+      app.post('/Feedback',async(req,res)=>{
+        const {name,email,feedback}=req.body;
+        const collections=db.collection("Feedback");
+        const add=await collections.insertOne({name,email,feedback});
+        if(add){
+          res.send({success:true,message:"successfully given feedback"});
+        }
+        else{
+          res.status(404).send({success:false,message:"error occurred"});
+        }
+      });
     app.listen(PORT, () => {
       console.log(`🚀 Server is running on port ${PORT}`);
     });
