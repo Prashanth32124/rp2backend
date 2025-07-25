@@ -36,6 +36,7 @@ MongoClient.connect(mongoURL)
       return res.send("Invalid")
      }
     }
+    
     app.post("/login", Middlewarelogin, (req, res) => {
     res.send(`logged successfully ${req.user.username}`)
     });
@@ -71,7 +72,20 @@ MongoClient.connect(mongoURL)
     app.post("/signup", Middlewaresignup, (req, res) => {
       res.send(`signup successfully ${req.user.username}`)
     });
-    
+
+      app.post("/Admin", async (req, res) => {
+      const { username, password } = req.body;
+      const collections = db.collection("Admin");
+
+      const user = await collections.findOne({ username, password });
+
+      if (user) {
+      res.send({ success: true }); // ✅ Send object
+      } else {
+      res.status(404).send({ success: false }); // ✅ Send object
+      }
+      });
+
 
     app.listen(PORT, () => {
       console.log(`🚀 Server is running on port ${PORT}`);
