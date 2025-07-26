@@ -98,7 +98,7 @@ MongoClient.connect(mongoURL)
         }
       });
 
-      app.post('/Feedback',async(req,res)=>{
+      app.post('/feedback',async(req,res)=>{
         const {name,email,feedback}=req.body;
         const collections=db.collection("Feedback");
         const add=await collections.insertOne({name,email,feedback});
@@ -109,6 +109,17 @@ MongoClient.connect(mongoURL)
           res.status(404).send({success:false,message:"error occurred"});
         }
       });
+      app.post("/Adminadd",async(req,res)=>{
+        const {username,password}=req.body;
+        const collections=db.collection("Admin");
+        const user=collections.insertOne({username,password});
+        if(user){
+          res.send({success:true});
+        }
+        else{
+          res.status(404).send({success:false});
+        }
+      })
     app.listen(PORT, () => {
       console.log(`🚀 Server is running on port ${PORT}`);
     });
