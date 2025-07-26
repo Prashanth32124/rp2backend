@@ -80,16 +80,16 @@ MongoClient.connect(mongoURL)
       const user = await collections.findOne({ username, password });
 
       if (user) {
-      res.send({ success: true }); // ✅ Send object
+      res.send({ success: true });
       } else {
-      res.status(404).send({ success: false }); // ✅ Send object
+      res.status(404).send({ success: false }); 
       }
       });
 
       app.post("/AdminDashboard",async(req,res)=>{
-        const payload=req.body;
-        const collections=db.collection("klimages");
-        const add=await collections.insertOne(payload);
+        const {imagedata,imagedesc,imageType,clgname}=req.body;
+        const collections=db.collection({clgname});
+        const add=await collections.insertOne({imagedata,imagedesc,imageType});
         if(add  && add.insertedId){
           res.send({success:true,message:"Successfully added"});
         }
