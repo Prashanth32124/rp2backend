@@ -87,9 +87,9 @@ MongoClient.connect(mongoURL)
       });
 
       app.post("/AdminDashboard",async(req,res)=>{
-        const {imageData,imageDesc,imageType,clgname}=req.body;
+        const {imageData,imageDes,imageType,clgname}=req.body;
         const collections=db.collection(clgname);
-        const add=await collections.insertOne({imageData,imageDesc,imageType});
+        const add=await collections.insertOne({imageData,imageDes,imageType});
         if(add  && add.insertedId){
           res.send({success:true,message:"Successfully added"});
         }
