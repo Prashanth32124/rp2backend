@@ -87,9 +87,9 @@ MongoClient.connect(mongoURL)
       });
 
       app.post("/AdminDashboard",async(req,res)=>{
-        const {imagedata,imagedesc,imageType,clgname}=req.body;
+        const {imageData,imageDesc,imageType,clgname}=req.body;
         const collections=db.collection(clgname);
-        const add=await collections.insertOne({imagedata,imagedesc,imageType});
+        const add=await collections.insertOne({imageData,imageDesc,imageType});
         if(add  && add.insertedId){
           res.send({success:true,message:"Successfully added"});
         }
@@ -112,7 +112,7 @@ MongoClient.connect(mongoURL)
       app.post("/Adminadd",async(req,res)=>{
         const {username,password}=req.body;
         const collections=db.collection("Admin");
-        const user=collections.insertOne({username,password});
+        const user=await collections.insertOne({username,password});
         if(user){
           res.send({success:true});
         }
