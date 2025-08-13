@@ -194,6 +194,19 @@ app.post("/review", async (req, res) => {
     res.status(500).json({ success: false, message: "Server error." });
   }
 });
+app.get("/review", async (req, res) => {
+  const collections = db.collection("klreviews");
+  const data = await collections.find({}).toArray();
+
+  if (data.length > 0) {
+    res.status(200).json(data);
+  } else {
+    res.status(404).json({ message: "No reviews found" });
+  }
+});
+
+
+
 
       app.listen(PORT, () => {
       console.log(`🚀 Server is running on port ${PORT}`);
