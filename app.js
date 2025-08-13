@@ -181,7 +181,7 @@ app.post("/review", async (req, res) => {
     return res.status(400).json({ success: false, message: "Name and experience are required." });
   }
 
-  const collections = db.collection("vitdes");
+  const collections = db.collection("klreviews");
   try {
     const data = await collections.insertOne({ name, experience });
     if (data.acknowledged) {
