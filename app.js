@@ -172,6 +172,28 @@
       imagedata: data.imagedata
       });
       });
+     
+  
+app.post("/review", async (req, res) => {
+  const { name, experience } = req.body;
+  
+  if (!name || !experience) {
+    return res.status(400).json({ success: false, message: "Name and experience are required." });
+  }
+
+  const collections = db.collection("vitdes");
+  try {
+    const data = await collections.insertOne({ name, experience });
+    if (data.acknowledged) {
+      res.status(201).json({ success: true, message: "Data added successfully." });
+    } else {
+      res.status(500).json({ success: false, message: "Failed to insert data." });
+    }
+  } catch (error) {
+    console.error("Error inserting data:", error);
+    res.status(500).json({ success: false, message: "Server error." });
+  }
+});
 
       app.listen(PORT, () => {
       console.log(`🚀 Server is running on port ${PORT}`);
