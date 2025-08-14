@@ -24,22 +24,37 @@
       res.send("Hello Prashu! Server is running and DB connected! 😊");
       });
 
-      const Middlewarelogin =async(req,res,next)=>{
-      const {email, username, password } = req.body;
-      const usersCollection = db.collection("Users");
-      const user = await usersCollection.findOne({username, password });
-      if(user){
-      req.user=user;
-      next();
-      }
-      else{
-      return res.send("Invalid")
-      }
-      }
+ app.post("/login", async (req, res) => {
+      try {
+        let { username, password } = req.body;
 
-      app.post("/login", Middlewarelogin, (req, res) => {
-      res.send(`logged successfully ${req.user.username}`)
-      });
+        if (!username || !password) {
+          return res
+            .status(400)
+            .json({ success: false, message: "Username and password required" });
+        }
+
+        username = username.trim();
+        password = password.trim();
+
+        const usersCollection = db.collection("Users");
+        const user = await usersCollection.findOne({ username, password });
+
+        if (user) {
+          res.status(200).json({ success: true, message: "Login successful" });
+        } else {
+          res
+            .status(401)
+            .json({ success: false, message: "Invalid username or password" });
+        }
+      } catch (err) {
+        console.error("❌ Error in /login:", err);
+        res.status(500).json({ success: false, message: "Server error" });
+      }
+    });
+
+
+
 
       const Middlewareimages=async(req,res,next)=>{
       const usersCollections=db.collection("klimages");
@@ -83,7 +98,6 @@
       app.post("/Admin", async (req, res) => {
       const { username, password } = req.body;
       const collections = db.collection("Admin");
-
       const user = await collections.findOne({ username, password });
 
       if (user) {
@@ -176,11 +190,9 @@
   
 app.post("/review", async (req, res) => {
   const { name, experience } = req.body;
-  
-  if (!name || !experience) {
+    if (!name || !experience) {
     return res.status(400).json({ success: false, message: "Name and experience are required." });
   }
-
   const collections = db.collection("klreviews");
   try {
     const data = await collections.insertOne({ name, experience });
@@ -194,10 +206,10 @@ app.post("/review", async (req, res) => {
     res.status(500).json({ success: false, message: "Server error." });
   }
 });
+
 app.get("/review", async (req, res) => {
   const collections = db.collection("klreviews");
   const data = await collections.find({}).toArray();
-
   if (data.length > 0) {
     res.status(200).json(data);
   } else {
