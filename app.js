@@ -24,34 +24,17 @@
       res.send("Hello Prashu! Server is running and DB connected! 😊");
       });
 
- app.post("/login", async (req, res) => {
-      try {
-        let { username, password } = req.body;
-
-        if (!username || !password) {
-          return res
-            .status(400)
-            .json({ success: false, message: "Username and password required" });
-        }
-
-        username = username.trim();
-        password = password.trim();
-
-        const usersCollection = db.collection("Users");
-        const user = await usersCollection.findOne({ username, password });
-
-        if (user) {
-          res.status(200).json({ success: true, message: "Login successful" });
-        } else {
-          res
-            .status(401)
-            .json({ success: false, message: "Invalid username or password" });
-        }
-      } catch (err) {
-        console.error("❌ Error in /login:", err);
-        res.status(500).json({ success: false, message: "Server error" });
+    app.post("/login",async(req,res)=>{
+      const {username,password}=req.body;
+      const collections=db.collection("Users");
+      const user=await collections.insertOne({username,password});
+      if(user){
+      res.send({success:true});
       }
-    });
+      else{
+      res.status(404).send({success:false});
+      }
+      })
 
 
 
