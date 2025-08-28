@@ -212,7 +212,17 @@ app.get("/review", async (req, res) => {
   }
 });
 
-
+app.get("/MMhome",async(req,res)=>{
+  const usercollections=db.collection("vitdes");
+  const images = await usercollections.find().toArray();
+  if(images.length>0)
+  {
+    res.status(200).json(images);
+  }
+  else{
+    res.status(400).json({message:"cant send images"});
+  }
+});
 
 
       app.listen(PORT, () => {
