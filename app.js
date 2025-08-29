@@ -224,7 +224,17 @@ app.get("/MMhome",async(req,res)=>{
   }
 });
 
+app.post("/MMhomed",async(req,res)=>{
+  const {username}=req.body;
+  const usercollections=db.collection("Users");
+  const user=await usercollections.findOne({username});
+  if (user) {
+      res.send({ success: true ,email:user.email });
+      } else {
+      res.status(404).send({ success: false }); 
+      }
 
+})
       app.listen(PORT, () => {
       console.log(`🚀 Server is running on port ${PORT}`);
       });
